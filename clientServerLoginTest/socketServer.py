@@ -1,7 +1,8 @@
 ##SERVIDOR##
 import SocketServer
+import time
 
-class miTcpHandler(SocketServer.BaseRequestHandler):		#POR EL MOMENTO NO LO ESTOY USANDO, MODIFICARLO DEPOIS. AHORA SOLO LOGIN.
+class miTcpHandler(SocketServer.BaseRequestHandler):		#POR EL MOMENTO NO LO ESTOY USANDO, MODIFICARLO DEPOIS. AHORA SOLO LOGIN. test sacado del tutorial de chelin
 	#se llama en cada conexion
 	def handle(self):
 		self.oracion=self.request.recv(1024).strip() #tamanio de ventana
@@ -12,46 +13,63 @@ class miTcpHandler(SocketServer.BaseRequestHandler):		#POR EL MOMENTO NO LO ESTO
 class loginHandler(SocketServer.BaseRequestHandler):
 	#se llama en cada conexion. SI O SI DEBE LLAMARSE HANDLE PORQ ES UN CASO DE USO.
 	def handle(self):
-		exitoLogin=False
-		while exitoLogin == False:
-			self.nombreUsuario=self.request.recv(1024).strip()
-			self.passwordUsuario=self.request.recv(1024).strip()
-			print "Usuario Ingresado: ",self.nombreUsuario
-			print "Contrasenia Ingresada: ",self.passwordUsuario
-			with open("usernames.txt") as loginFile:
-				for linea in loginFile:
-					user,passw=linea.split(",")
-					print user
-					print passw
-					if (user == self.nombreUsuario and  passw == self.passwordUsuario):
-						exitoLogin=True
-			
-			if (exitoLogin == False):
-				print "La conexion fallo"
-				print "Estado del login: ",exitoLogin
-				self.request.send("failed")
+		def loginprocess():
+			exitoLogin=False
+			while exitoLogin == False:
+				self.nombreUsuario=self.request.recv(1024).strip()
+				self.passwordUsuario=self.request.recv(1024).strip()
+				print "Datos recibidos"
+				time.sleep(1)
+				print "Usuario Ingresado: ",self.nombreUsuario
+				print "Contrasenia Ingresada: ",self.passwordUsuario
+				with open("usernames.txt") as loginFile:
+					for linea in loginFile:		#Recorrer el archivo hasta que el programa detecte coincidencia con las credenciales ingresadas.
+						user,passw=linea.split(",")
+						if (user == self.nombreUsuario and  passw == self.passwordUsuario):
+							exitoLogin=True
+				
+				if (exitoLogin == False):
+					print "La conexion fallo. Esperando nuevas credenciales..."
+					self.request.send("failed")
 
-		print "Usuario logeado: ",self.nombreUsuario
-		print "El servidor se cerrara." #EN REALIDAD NO SE CIERRA PORQUE PUSIMOS SERVE FOREVER!! cambiar eso!!!
-		self.request.send("Success")
+			print "Usuario logeado: ",self.nombreUsuario
+			print "Login exitoso!" #EN REALIDAD NO SE CIERRA PORQUE PUSIMOS SERVE FOREVER!! cambiar eso!!!
+			self.request.send("Success")
+
+
+		def juegoLaberinto():
+			def crearArrayMultiDimensional():
+				# Creamos una list comprehension en python, es decir una lista dentro de otra lista.
+				ancho, alto = 11, 7;
+				Matriz = [[0 for x in range(ancho)] for y in range(alto)]
+				linea=0
+				while linea != 7:
+					print Matriz[linea]
+					linea+=1
+			#Creamos y printeamos el tablero (esta todo en la misma funcion)
+			crearArrayMultiDimensional()
+
+		establish=self.request.recv(1000).strip()
+		print establish
+		loginprocess()
+		print "Abriendo tablero de juego..."
+		print " "
+		time.sleep(1)
+		juegoLaberinto()
+		print " "
+		print "Tablero Creado!"
 
 
 
+def main():			## ruta: C:\Users\Usuario\Desktop\clientServerLoginTest
+	print "Iniciando servidor..."
+	host,port="localhost", 9999 #definimos el socket
+	time.sleep(1)
 	
 
-
-
-
-
-
-def main():
-	print "Prueba del servidor"
-	host="localhost" #direccion
-	port=9999
-
-	server1 = SocketServer.TCPServer((host,port),loginHandler) #le paso una tupla con EL SOCKET y el handler
-	print "El server esta corriendo"
-	server1.serve_forever() #andar hasta el cierre del programa
+	server1 = SocketServer.TCPServer((host,port),loginHandler) #le paso una tupla con EL SOCKET y el handler que voy a usar 
+	print "Servidor Iniciado: Esperando conexion del cliente..."
+	server1.serve_forever() #andar hasta el cierre del programa --> socket1.server_forever() // server1.handle_request() --> Cerrar despues del login
 
 
 
