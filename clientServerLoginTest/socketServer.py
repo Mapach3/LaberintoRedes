@@ -1,6 +1,7 @@
 ##SERVIDOR##
 import SocketServer
 import time
+import pickle
 
 class miTcpHandler(SocketServer.BaseRequestHandler):		#POR EL MOMENTO NO LO ESTOY USANDO, MODIFICARLO DEPOIS. AHORA SOLO LOGIN. test sacado del tutorial de chelin
 	#se llama en cada conexion
@@ -13,6 +14,8 @@ class miTcpHandler(SocketServer.BaseRequestHandler):		#POR EL MOMENTO NO LO ESTO
 class loginHandler(SocketServer.BaseRequestHandler):
 	#se llama en cada conexion. SI O SI DEBE LLAMARSE HANDLE PORQ ES UN CASO DE USO.
 	def handle(self):
+		##################-----..----METODOS-------------##########################################
+		##################--------------------------------#########################################
 		def loginprocess():
 			exitoLogin=False
 			while exitoLogin == False:
@@ -20,13 +23,14 @@ class loginHandler(SocketServer.BaseRequestHandler):
 				self.passwordUsuario=self.request.recv(1024).strip()
 				print "Datos recibidos"
 				time.sleep(1)
-				print "Usuario Ingresado: ",self.nombreUsuario
-				print "Contrasenia Ingresada: ",self.passwordUsuario
 				with open("usernames.txt") as loginFile:
-					for linea in loginFile:		#Recorrer el archivo hasta que el programa detecte coincidencia con las credenciales ingresadas.
+					for linea in loginFile: #
 						user,passw=linea.split(",")
-						if (user == self.nombreUsuario and  passw == self.passwordUsuario):
+						passw= passw.rstrip('\n') #Esto saca el salto de linea al final de la contrasenia
+						if (user == self.nombreUsuario and passw ==  self.passwordUsuario): 
 							exitoLogin=True
+							self.request.send("Success")
+							break
 				
 				if (exitoLogin == False):
 					print "La conexion fallo. Esperando nuevas credenciales..."
@@ -34,30 +38,37 @@ class loginHandler(SocketServer.BaseRequestHandler):
 
 			print "Usuario logeado: ",self.nombreUsuario
 			print "Login exitoso!" #EN REALIDAD NO SE CIERRA PORQUE PUSIMOS SERVE FOREVER!! cambiar eso!!!
-			self.request.send("Success")
 
 
-		def juegoLaberinto():
-			def crearArrayMultiDimensional():
-				# Creamos una list comprehension en python, es decir una lista dentro de otra lista.
-				ancho, alto = 11, 7;
-				Matriz = [[0 for x in range(ancho)] for y in range(alto)]
-				linea=0
-				while linea != 7:
-					print Matriz[linea]
-					linea+=1
-			#Creamos y printeamos el tablero (esta todo en la misma funcion)
-			crearArrayMultiDimensional()
+		def crearArrayMultiDimensional():
+			# Creamos una list comprehension en python, es decir una lista dentro de otra lista.
+			ancho, alto = 11, 7;
+			Matriz = [[0 for x in range(ancho)] for y in range(alto)]
+			return Matriz
+		#Creamos y printeamos el tablero (esta todo en la misma funcion)
+		def imprimirTablero(tablero):
+			linea=0
+			while linea != 7:
+				print tablero[linea]
+				linea+=1
+
+		##############################################################################################
 
 		establish=self.request.recv(1000).strip()
 		print establish
 		loginprocess()
-		print "Abriendo tablero de juego..."
+		print "Creando Tablero de juego..."
 		print " "
 		time.sleep(1)
-		juegoLaberinto()
+		tableroJuego=crearArrayMultiDimensional()
+		print "Imprimiendo tablero..."
+		imprimirTablero(tableroJuego)
 		print " "
-		print "Tablero Creado!"
+		print "Tablero Creado! Enviando tablero al usuario..."
+		print "------END OF ACTION----"
+		#data=pickle.dumps(tableroJuego) 
+		#self.request.send(data)
+
 
 
 

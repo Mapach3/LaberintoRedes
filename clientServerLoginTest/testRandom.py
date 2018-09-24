@@ -3,17 +3,19 @@
 #loginSuccess=False
 
 def randomTestForLogin():
+	userIngr="juan"
+	passIngr="juan444"
+	loginSuccess=False
 	with open("usernames.txt") as loginFile:
 		for line in loginFile:
 			print "Linea leida: ",line
 			user,passw=line.split(",")
+			user
 			print "Usuario: ",user
 			print "Password: ",passw
-			if (usuarioIngresado == user and passwordIngresada == passw):
+			if (userIngr == user and passIngr == passw):
 				loginSuccess=True
-
-			else: 
-				pass
+				break
 
 	if (loginSuccess):
 		print "Se logeo correctamente"
@@ -41,6 +43,23 @@ def crearArrayMultiDimensional():
 		linea+=1
 
 
+#crearArrayMultiDimensional() 
 
 
-crearArrayMultiDimensional() 
+archivo=open("usernames.txt","r")
+cnt=0
+while cnt <=3:
+	linea=archivo.readline(36)
+	user,contra=linea.split(",")
+	contra=contra.rstrip('\n')
+	print "Dato extraido: "
+	print user
+	print contra
+	print "Fin dato extraido"
+	comparUser="guido"
+	comparContr="guido333"
+	if (contra == comparContr):
+		print "SUCCESSFUL"
+		break
+	cnt+=1
+	print linea
