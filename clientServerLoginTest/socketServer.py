@@ -65,9 +65,9 @@ class loginHandler(SocketServer.BaseRequestHandler):
 		imprimirTablero(tableroJuego)
 		print " "
 		print "Tablero Creado! Enviando tablero al usuario..."
+		tab_serializado=pickle.dumps(tableroJuego)
+		self.request.send(tab_serializado)
 		print "------END OF ACTION----"
-		#data=pickle.dumps(tableroJuego) 
-		#self.request.send(data)
 
 
 

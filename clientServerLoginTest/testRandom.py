@@ -63,3 +63,8 @@ while cnt <=3:
 		break
 	cnt+=1
 	print linea
+
+
+
+	### LINK DE DONDE SAQUE LO DEL PICKLE PARA PASARLE AL CLIENTE EL TABLERO
+	###  https://stackoverflow.com/questions/24423162/how-to-send-an-array-over-a-socket-in-python/24424025

@@ -27,13 +27,20 @@ def loginProcess():
 		else:
 			print "El servidor NO acepto los datos. Intente de nuevo"
 
-def recibirTablero(matriz):
+def recibirTablero():
 	print "El servidor esta enviando el tablero..."
-	print "hace falta programar esta parte"
+	tablero=pickle.loads(socket1.recv(4096))
+	linea=0
+	while linea != 7:
+		print tablero[linea]
+		linea+=1
+	print "Tablero Mostrado"
+	return tablero
 
 
 
 loginProcess()
 ancho, alto = 11, 7;
 Matriz = [[0 for x in range(ancho)] for y in range(alto)]
-recibirTablero(Matriz)
+recibirTablero()
+
