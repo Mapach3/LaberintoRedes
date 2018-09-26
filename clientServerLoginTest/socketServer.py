@@ -37,15 +37,60 @@ class loginHandler(SocketServer.BaseRequestHandler):
 					self.request.send("failed")
 
 			print "Usuario logeado: ",self.nombreUsuario
-			print "Login exitoso!" #EN REALIDAD NO SE CIERRA PORQUE PUSIMOS SERVE FOREVER!! cambiar eso!!!
+			print "Login exitoso!" 
 
 
 		def crearArrayMultiDimensional():
 			# Creamos una list comprehension en python, es decir una lista dentro de otra lista.
-			ancho, alto = 11, 7;
-			Matriz = [[0 for x in range(ancho)] for y in range(alto)]
+			ancho, alto = 15, 7;
+			Matriz = [["P" for x in range(ancho)] for y in range(alto)]
+			# armado de tablero, segun el enunciado que nos dio damian.
+			for x in range(0,ancho):
+				Matriz[0][x]="P"
+				Matriz[6][x]="P"
+			for x in range(0,alto):
+				if (x==1):
+					Matriz[x][0]="E"
+				else:
+					Matriz[x][0]="P"
+				Matriz[x][14]="P"
+			for x in range(1,alto):
+				Matriz[x][4]="C"
+				Matriz[x][8]="C"
+			
+			Matriz[1][1]="C"	# esto se podria automatizar con un for pero no tengo ganas ahora de hacerlo..
+			Matriz[1][2]="C"
+			Matriz[1][3]="C"
+			Matriz[1][8]="C"
+			Matriz[1][9]="C"
+			Matriz[1][10]="C"
+			Matriz[1][11]="C"
+			Matriz[1][12]="C"
+			Matriz[1][13]="C"
+			
+			Matriz[3][5]="C"
+			Matriz[3][6]="C"
+			Matriz[3][7]="C"
+
+			Matriz[4][4]="C"
+			Matriz[4][8]="C"
+			Matriz[4][9]="C"
+			Matriz[4][10]="C"
+			Matriz[4][11]="C"
+			Matriz[4][12]="C"
+			Matriz[4][13]="C" #este campo esta en duda porque esta marcado pero no forma parte del camino por asi decirlo
+
+			Matriz[5][6]="C"
+			Matriz[5][7]="C"
+			Matriz[5][11]="C"
+
+			Matriz[6][3]="C"	
+			Matriz[6][9]="C"
+			Matriz[6][10]="C"
+			Matriz[6][11]="C"
+			
 			return Matriz
-		#Creamos y printeamos el tablero (esta todo en la misma funcion)
+		#printeamos el tablero
 		def imprimirTablero(tablero):
 			linea=0
 			while linea != 7:

@@ -35,12 +35,11 @@ def recibirTablero():
 		print tablero[linea]
 		linea+=1
 	print "Tablero Mostrado"
+	print "Tipo: ",type(tablero) #esto lo ponemos para asegurarnos que nos lo envia como lista y no como string. eliminar despues
 	return tablero
 
 
 
 loginProcess()
-ancho, alto = 11, 7;
-Matriz = [[0 for x in range(ancho)] for y in range(alto)]
 recibirTablero()
 
