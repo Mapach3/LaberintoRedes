@@ -42,4 +42,7 @@ def recibirTablero():
 
 loginProcess()
 recibirTablero()
+posicion=socket1.recv(1024)
+print posicion
+
 

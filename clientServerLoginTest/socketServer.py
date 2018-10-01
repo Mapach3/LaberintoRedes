@@ -50,7 +50,7 @@ class loginHandler(SocketServer.BaseRequestHandler):
 				Matriz[6][x]="P"
 			for x in range(0,alto):
 				if (x==1):
-					Matriz[x][0]="E"
+					Matriz[x][0]="*" #posicion inicial/actual va con * en vez de E de entrada
 				else:
 					Matriz[x][0]="P"
 				Matriz[x][14]="P"
@@ -66,7 +66,7 @@ class loginHandler(SocketServer.BaseRequestHandler):
 			Matriz[1][10]="C"
 			Matriz[1][11]="C"
 			Matriz[1][12]="C"
-			Matriz[1][13]="C"
+			Matriz[1][13]="C" #cambiar a c
 			
 			Matriz[3][5]="C"
 			Matriz[3][6]="C"
@@ -96,6 +96,13 @@ class loginHandler(SocketServer.BaseRequestHandler):
 			while linea != 7:
 				print tablero[linea]
 				linea+=1
+		def determinarPosicion(tablero):
+			for x in range(0,7):
+				for y in range(0,15):
+					if (tablero[x][y] == "*"):
+						position = "Posicion del tablero: [",x+1,"]","[",y+1,"]"
+			return position
+
 
 		##############################################################################################
 
@@ -112,6 +119,10 @@ class loginHandler(SocketServer.BaseRequestHandler):
 		print "Tablero Creado! Enviando tablero al usuario..."
 		tab_serializado=pickle.dumps(tableroJuego)
 		self.request.send(tab_serializado)
+		print determinarPosicion(tableroJuego)
+		position = determinarPosicion(tableroJuego)
+		self.request.send(str(position))
+
 		print "------END OF ACTION----"
 
 
