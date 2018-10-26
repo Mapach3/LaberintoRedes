@@ -1,3 +1,4 @@
+
 #CLIENTE BASICO
 
 import socket
@@ -22,7 +23,7 @@ def loginProcess():
 		conf=socket1.recv(1024) #tamanio de ventana
 
 		if (conf == "Success"):
-			print "El servidor acepto los datos. Cerrando la conexion.."
+			print "El servidor acepto los datos."
 			#socket1.close()
 		else:
 			print "El servidor NO acepto los datos. Intente de nuevo"
@@ -35,7 +36,7 @@ def recibirTablero():
 		print tablero[linea]
 		linea+=1
 	print "Tablero Mostrado"
-	print "Tipo: ",type(tablero) #esto lo ponemos para asegurarnos que nos lo envia como lista y no como string. eliminar despues
+	#print "Tipo: ",type(tablero) #esto lo ponemos para asegurarnos que nos lo envia como lista y no como string. eliminar despues
 	return tablero
 
 

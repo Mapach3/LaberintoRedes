@@ -1,0 +1,12 @@
+*Fecha de entrega --> 10/11/2018 (consultar con damian because esa fecha hay exposicion)
+--Faltar implementar--
+* Enviar solo una seccion al usuario (posicion +1 a la izq y +1 a la derecha)
+* Logica principal de enviar, recibir, etc hasta que termine el juego (loop)
+* Movimiento del usuario (que al enviar una nueva posicion te lo permita y que no sea una pared blablabla)
+* El resto de las cosas que pide el enunciado (Puntos 3, 4 y 5).
+
+--Cambios a realizar--
+*Automatizar la creacion del tablero, lo que esta hecho ahi es un asco
+
+
+ruta : C:\Users\Usuario\Desktop\clientServerLoginTest

@@ -1,15 +1,8 @@
+
 ##SERVIDOR##
 import SocketServer
 import time
 import pickle
-
-class miTcpHandler(SocketServer.BaseRequestHandler):		#POR EL MOMENTO NO LO ESTOY USANDO, MODIFICARLO DEPOIS. AHORA SOLO LOGIN. test sacado del tutorial de chelin
-	#se llama en cada conexion
-	def handle(self):
-		self.oracion=self.request.recv(1024).strip() #tamanio de ventana
-		self.num=len(self.oracion)
-		print "El servidor recibio la oracion: ", self.oracion, "Su numero de caracteres es: ",self.num
-		self.request.send(str(self.num))
 
 class loginHandler(SocketServer.BaseRequestHandler):
 	#se llama en cada conexion. SI O SI DEBE LLAMARSE HANDLE PORQ ES UN CASO DE USO.
@@ -100,7 +93,7 @@ class loginHandler(SocketServer.BaseRequestHandler):
 			for x in range(0,7):
 				for y in range(0,15):
 					if (tablero[x][y] == "*"):
-						position = "Posicion del tablero: [",x+1,"]","[",y+1,"]"
+						position = "Posicion en el tablero: [",x+1,"]","[",y+1,"]"
 			return position
 
 
