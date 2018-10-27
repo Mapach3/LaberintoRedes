@@ -1,9 +1,31 @@
 *Fecha de entrega --> 10/11/2018 (consultar con damian because esa fecha hay exposicion)
 --Faltar implementar--
-* Enviar solo una seccion al usuario (posicion +1 a la izq y +1 a la derecha)
+* Enviar solo una seccion al usuario (posicion +2 a la izq y +2 a la derecha, +2 arriba y +2 abajo)
 * Logica principal de enviar, recibir, etc hasta que termine el juego (loop)
-* Movimiento del usuario (que al enviar una nueva posicion te lo permita y que no sea una pared blablabla)
-* El resto de las cosas que pide el enunciado (Puntos 3, 4 y 5).
+* 3) PROTOCOLO --> PARA MANEJAR LAS RESPUESTAS DEL SERVIDOR
+
+RUNNING --> Cuando se inicia el server
+ESTABLISH --> Cuando se conecta el cliente
+LOG --> Mandar usuario y contraseña
+SEND --> Enviar tablero
+MOVE --> Mover una posicion (mandar reject si hay una pared)
+TAKE? (AUTOMATIZAR?) 
+PAY (Al guardia) --> Mandar reject cuando no se tenga oro y eso desemboque en volver a empezar
+WIN
+
+RESPUESTAS:
+100 ACCEPT 200 REJECT
+
+Ejemplo: LOG | user: ignacio | pass: igna555 | 100 --> Log correcto.
+Ejemplo: LOG | user: ignacio | pass: igna555 | 200 --> Log incorrecto.
+
+------------
+* 4) SEGURIDAD: Eso lo vamos viendo, google  y stackoverflow se encargan
+
+* 5) Practicamente ya se 
+
+
+
 
 --Cambios a realizar--
 *Automatizar la creacion del tablero, lo que esta hecho ahi es un asco

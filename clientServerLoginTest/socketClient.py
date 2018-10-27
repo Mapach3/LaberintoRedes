@@ -1,4 +1,3 @@
-
 #CLIENTE BASICO
 
 import socket
@@ -9,7 +8,8 @@ host="localhost"
 port=9999
 socket1=socket.socket()
 socket1.connect((host,port))
-socket1.send("Cliente Conectado")
+code=100
+socket1.send("ESTABLISH |"+str(host)+"|"+str(port)+"|"+str(code))
 
 def loginProcess():
 	print "Iniciando proceso de login..."
@@ -18,8 +18,13 @@ def loginProcess():
 		user=raw_input("Ingresar Username --> ")
 		contra=raw_input("Ingrese Password --> ")
 
+		#loginCommand=raw_input("LOGIN: ")
+
 		socket1.send(user)
 		socket1.send(contra)
+		#loginString= "LOG|us:"+user+"|pass:"+contra
+		#socket1.send(loginCommand)
+		#socket1.send(loginString)
 		conf=socket1.recv(1024) #tamanio de ventana
 
 		if (conf == "Success"):

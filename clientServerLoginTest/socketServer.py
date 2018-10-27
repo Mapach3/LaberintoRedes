@@ -11,10 +11,13 @@ class loginHandler(SocketServer.BaseRequestHandler):
 		##################--------------------------------#########################################
 		def loginprocess():
 			exitoLogin=False
+			codigoResponse=0
 			while exitoLogin == False:
 				self.nombreUsuario=self.request.recv(1024).strip()
 				self.passwordUsuario=self.request.recv(1024).strip()
-				print "Datos recibidos"
+				#self.loginData=self.request.recv(1024)
+				#print "LOG|user: "+self.nombreUsuario+"|pass: "+self.passwordUsuario
+				#print self.loginData
 				time.sleep(1)
 				with open("usernames.txt") as loginFile:
 					for linea in loginFile: #
@@ -23,13 +26,16 @@ class loginHandler(SocketServer.BaseRequestHandler):
 						if (user == self.nombreUsuario and passw ==  self.passwordUsuario): 
 							exitoLogin=True
 							self.request.send("Success")
+							codigoResponse=100
 							break
 				
 				if (exitoLogin == False):
-					print "La conexion fallo. Esperando nuevas credenciales..."
+					codigoResponse=200
+					print "LOG|user: ",self.nombreUsuario+"|pass: "+self.passwordUsuario+"|"+str(codigoResponse)
 					self.request.send("failed")
 
-			print "Usuario logeado: ",self.nombreUsuario
+			#print "Usuario logeado: ",self.nombreUsuario
+			print "LOG|user: ",self.nombreUsuario+"|pass: "+self.passwordUsuario+"|"+str(codigoResponse)
 			print "Login exitoso!" 
 
 
@@ -99,7 +105,7 @@ class loginHandler(SocketServer.BaseRequestHandler):
 
 		##############################################################################################
 
-		establish=self.request.recv(1000).strip()
+		establish=self.request.recv(1024).strip() #definir todos los tamanios de ventana en 1024
 		print establish
 		loginprocess()
 		print "Creando Tablero de juego..."
@@ -122,16 +128,18 @@ class loginHandler(SocketServer.BaseRequestHandler):
 
 
 def main():			## ruta: C:\Users\Usuario\Desktop\clientServerLoginTest
-	print "Iniciando servidor..."
+	print "STARTING SERVER"
 	host,port="localhost", 9999 #definimos el socket
 	time.sleep(1)
-	
+	code=200
+	if (host,port) == ("localhost",9999):
+		code=100
+		server1 = SocketServer.TCPServer((host,port),loginHandler) #le paso una tupla con EL SOCKET y el handler que voy a usar 
+		print "RUNNING ",code
+		server1.serve_forever() #andar hasta el cierre del programa --> socket1.server_forever() // server1.handle_request() --> Cerrar despues del login
 
-	server1 = SocketServer.TCPServer((host,port),loginHandler) #le paso una tupla con EL SOCKET y el handler que voy a usar 
-	print "Servidor Iniciado: Esperando conexion del cliente..."
-	server1.serve_forever() #andar hasta el cierre del programa --> socket1.server_forever() // server1.handle_request() --> Cerrar despues del login
-
-
+	else:
+		print "RUNNING |",code
 
 
 main()
