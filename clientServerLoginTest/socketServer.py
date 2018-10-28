@@ -51,7 +51,7 @@ class loginHandler(SocketServer.BaseRequestHandler):
 				if (x==1):
 					Matriz[x][0]="*" #posicion inicial/actual va con * en vez de E de entrada
 				else:
-					Matriz[x][0]="P"
+					Matriz[x][0]="P" 	
 				Matriz[x][14]="P"
 			for x in range(1,alto):
 				Matriz[x][4]="C"
@@ -96,11 +96,63 @@ class loginHandler(SocketServer.BaseRequestHandler):
 				print tablero[linea]
 				linea+=1
 		def determinarPosicion(tablero):
+			position="Nada"
 			for x in range(0,7):
 				for y in range(0,15):
 					if (tablero[x][y] == "*"):
 						position = "Posicion en el tablero: [",x+1,"]","[",y+1,"]"
 			return position
+
+########################################################################################### metodos para enviar cuadrante al usuario
+		def imprimirMatrizParaUsuario(tablero):
+			linea=0
+			while linea!= 4:
+				print tablero[linea]
+				linea+=1
+
+		def determinarCuadrante(tablero):
+			posx,posy=0,0
+			for x in range(0,7):
+				for y in range(0,15):
+					if (tablero[x][y] == "*"):
+						posx,posy=x,y
+
+		#Limitar la posicion EN Y para evitar que se vaya out of range #works
+		#SE IMPRIME DOS PARA ATRAS Y DOS PARA ADELANTE SEGUN ENUNCIADO
+			if posy==12 or posy==13 or posy==14:
+				endY=15
+			else: endY=posy+3
+			if posy==0 or posy==1:
+				startY=0
+			else: startY=posy-2
+
+			#Limitar la posicion en X #works
+			#SE IMPRIME UNO PARA ARRIBA Y 2 PARA ABAJO SEGUN ENUNCIADO
+			if posx==0 or posx==1:
+				startX=0
+			else: startX=posx-1
+			if posx==6 or posx==7:
+				endX=7
+			else: endX=posx+3	
+			
+			#Recorrer la matriz en base a lo definido para imprimir solo el cuadrante que se pide
+			listForSending= [["|" for x in range(0,4)] for y in range(0,4)]
+			forUserX=0
+			forUserY=0
+			for x in range(startX,endX):
+				forUserY=0
+				for y in range(startY,endY):
+					#print (Matriz[x][y]," ",end='')
+					listForSending[forUserX][forUserY]=tablero[x][y] 		#esta bugeado as fuck para algunos valores, averiguar por que
+					forUserY+=1
+				forUserX+=1
+
+				#print('\n')
+
+			imprimirMatrizParaUsuario(listForSending)
+			
+
+
 
 
 		##############################################################################################
@@ -114,6 +166,8 @@ class loginHandler(SocketServer.BaseRequestHandler):
 		tableroJuego=crearArrayMultiDimensional()
 		print "Imprimiendo tablero..."
 		imprimirTablero(tableroJuego)
+		print "Determinando Cuadrante TEST: "
+		determinarCuadrante(tableroJuego)
 		print " "
 		print "Tablero Creado! Enviando tablero al usuario..."
 		tab_serializado=pickle.dumps(tableroJuego)

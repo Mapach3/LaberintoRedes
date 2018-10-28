@@ -1,6 +1,6 @@
 *Fecha de entrega --> 10/11/2018 (consultar con damian because esa fecha hay exposicion)
 --Faltar implementar--
-* Enviar solo una seccion al usuario (posicion +2 a la izq y +2 a la derecha, +2 arriba y +2 abajo)
+* Enviar solo una seccion al usuario
 * Logica principal de enviar, recibir, etc hasta que termine el juego (loop)
 * 3) PROTOCOLO --> PARA MANEJAR LAS RESPUESTAS DEL SERVIDOR
 
@@ -32,3 +32,5 @@ Ejemplo: LOG | user: ignacio | pass: igna555 | 200 --> Log incorrecto.
 
 
 ruta : C:\Users\Usuario\Desktop\clientServerLoginTest
+
+
