@@ -104,6 +104,9 @@ class loginHandler(SocketServer.BaseRequestHandler):
 			return position
 
 ########################################################################################### metodos para enviar cuadrante al usuario
+                #Basicamente consiste en crear otra list comprehension (listForSending) de 5x5, que a medida que reccoramos la matriz original vaya poniendo los datos
+		# correctos (es decir los que estan alrededor de * que es la posicion actual del jugador) y devuelva listForSending con los datos correctos
+
 		def imprimirMatrizParaUsuario(tablero):
 			linea=0
 			while linea!= 4:
@@ -117,6 +120,7 @@ class loginHandler(SocketServer.BaseRequestHandler):
 					if (tablero[x][y] == "*"):
 						posx,posy=x,y
 
+                # ESTOS IF SIRVEN PARA LIMITAR LO QUE SE RECORRE Y SE PONE EN listForSending, segun lo que dice el enunciado
 		#Limitar la posicion EN Y para evitar que se vaya out of range #works
 		#SE IMPRIME DOS PARA ATRAS Y DOS PARA ADELANTE SEGUN ENUNCIADO
 			if posy==12 or posy==13 or posy==14:
