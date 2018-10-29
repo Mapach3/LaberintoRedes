@@ -6,7 +6,7 @@ def testMatriz():
 	for x in range(0,7):
 		for y in range(0,15):
 			Matriz[x][y]=y
-	Matriz[4][8]="P"   		#POSICION
+	Matriz[6][14]="P"   		#POSICION
 	posx,posy=determinarPosicion(Matriz)
 	imprimirTablero(Matriz)
 	
@@ -29,13 +29,13 @@ def testMatriz():
 	else: endX=posx+3
 
 	#Recorrer la matriz en base a lo definido para imprimir solo el cuadrante que se pide
-	listForSending= [["|" for x in range(0,4)] for y in range(0,4)]
+	listForSending= [["|" for x in range(0,5)] for y in range(0,5)]
 	forUserX=0
 	forUserY=0
 	for x in range(startX,endX):
 		for y in range(startY,endY):
 			print (Matriz[x][y]," ",end='')
-			listForSending[forUserX][forUserY]=Matriz[x][y]			#esta bugeado esto, no se porque, arreglarlo!!!
+			listForSending[forUserX][forUserY]=Matriz[x][y]			#esta bugeado esto, no se porque, arreglarlo!! // update: arreglado: habia que hacer un poco mas grande el cuadrante
 			forUserY+=1
 		forUserX+=1
 		forUserY=0

@@ -136,7 +136,7 @@ class loginHandler(SocketServer.BaseRequestHandler):
 			else: endX=posx+3	
 			
 			#Recorrer la matriz en base a lo definido para imprimir solo el cuadrante que se pide
-			listForSending= [["|" for x in range(0,4)] for y in range(0,4)]
+			listForSending= [["|" for x in range(0,5)] for y in range(0,5)]			#hacerlo de 5 porque sino supera el index y anda mal!!!!
 			forUserX=0
 			forUserY=0
 			for x in range(startX,endX):
@@ -150,9 +150,11 @@ class loginHandler(SocketServer.BaseRequestHandler):
 				#print('\n')
 
 			imprimirMatrizParaUsuario(listForSending)
+
+			return listForSending
 			
 
-
+		########################################################################################################### fin metodos para enviar cuadrante al usuario
 
 
 		##############################################################################################
@@ -164,14 +166,16 @@ class loginHandler(SocketServer.BaseRequestHandler):
 		print " "
 		time.sleep(1)
 		tableroJuego=crearArrayMultiDimensional()
-		print "Imprimiendo tablero..."
-		imprimirTablero(tableroJuego)
-		print "Determinando Cuadrante TEST: "
-		determinarCuadrante(tableroJuego)
+		print "Imprimiendo tablero Completo (TEST) ..."
+		imprimirTablero(tableroJuego)				#esto imprime el tablero en la consola del server
+		print "Cuadrante a enviar (TEST): "
+		tabSoloCuadrante=determinarCuadrante(tableroJuego)
 		print " "
 		print "Tablero Creado! Enviando tablero al usuario..."
-		tab_serializado=pickle.dumps(tableroJuego)
-		self.request.send(tab_serializado)
+		#tab_serializado=pickle.dumps(tableroJuego)
+		tabCuadrante_serial=pickle.dumps(tabSoloCuadrante)
+		#self.request.send(tab_serializado)
+		self.request.send(tabCuadrante_serial)
 		print determinarPosicion(tableroJuego)
 		position = determinarPosicion(tableroJuego)
 		self.request.send(str(position))

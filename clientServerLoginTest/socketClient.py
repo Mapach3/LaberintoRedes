@@ -35,9 +35,9 @@ def loginProcess():
 
 def recibirTablero():
 	print "El servidor esta enviando el tablero..."
-	tablero=pickle.loads(socket1.recv(4096))
+	tablero=pickle.loads(socket1.recv(1024))
 	linea=0
-	while linea != 7:
+	while linea != 4:
 		print tablero[linea]
 		linea+=1
 	print "Tablero Mostrado"
