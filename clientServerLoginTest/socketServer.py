@@ -25,8 +25,9 @@ class loginHandler(SocketServer.BaseRequestHandler):
 						passw= passw.rstrip('\n') #Esto saca el salto de linea al final de la contrasenia
 						if (user == self.nombreUsuario and passw ==  self.passwordUsuario): 
 							exitoLogin=True
-							self.request.send("Success")
+							estadoResponse = "OK"
 							codigoResponse=100
+							self.request.send("LOG|" + codigoResponse + "|" + estadoResponse)
 							break
 				
 				if (exitoLogin == False):
