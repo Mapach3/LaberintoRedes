@@ -4,8 +4,8 @@ import socket
 import pickle
 import time
 print "Bienvenido cliente: "
-host="localhost"
-port=9999
+host = "localhost"
+port = 9999
 socket1=socket.socket()
 socket1.connect((host,port))
 code=100
@@ -63,8 +63,3 @@ loginProcess()
 recibirTablero()
 posicion=socket1.recv(1024)
 print posicion
-
-
-
-
-

@@ -5,11 +5,14 @@ import pickle
 
 class miTcpHandler(SocketServer.BaseRequestHandler):
     def handle(self):
-
+        self.oro_jugador = 0
+        self.oro_guardia = 100
+        self.key_jugador = False
         def establecer_conexion():
             print "Estableciendo conexion..."
+            print self.oro_guardia
             establish = self.request.recv(1024).strip() #definir todos los tamanios de ventana en 1024
-            print establish
+            self.request.send("EST|"+str(200))
             print "Conexion establecida"
 
         def crear_tablero():
@@ -68,78 +71,190 @@ class miTcpHandler(SocketServer.BaseRequestHandler):
             for x,linea in enumerate(tablero):
                 for y,casilla in enumerate(linea):
                     if (casilla == "*"):
-                        print "Posicion determinada: [" + x + "," y + "]"
+                        print "Posicion determinada: [" + str(x) + "," + str(y) + "]"
                         return x,y
             print "No se pudo determinar la posicion."
 
-        def cuadrante(tablero, pos_x, pos_y):
-            tamanio_x = len(tablero[0]) - 1
-            tamanio_y = len(tablero) - 1
+        def determinar_cuadrante(tablero, pos_x, pos_y):
             x1 = pos_x - 2
             if (x1 < 0):
                 x1 = 0
             x2 = pos_x + 2
-            if (x2 > tamanio_x):
-                x2 = tamanio_x
+            if (x2 > 5):
+                x2 = 5
             y1 = pos_y - 2
             if (y1 < 0):
                 y1 = 0
             y2 = pos_y + 2
-            if (y2 > tamanio_y)
-                y2 = tamanio_y
-            cuadrante = [tamanio_x][tamanio_y]
-            for x in range(x1,x2):
-                for y in range(y1,y2):
-                    cuadrante[x][y] = tablero[x][y]
+            if (y2 > 17):
+                y2 = 17
+            tamanio_cuad_x = x2 - x1 + 1
+            tamanio_cuad_y = y2 - y1 + 1
+            cuadrante = [["|" for y in range(tamanio_cuad_y)] for x in range(tamanio_cuad_x)]
+            cuad_x = 0
+            for x in range(x1,x2+1):
+                cuad_y = 0
+                for y in range(y1,y2+1):
+                    cuadrante[cuad_x][cuad_y] = tablero[x][y]
+                    cuad_y += 1
+                cuad_x += 1
             return cuadrante
 
-
+        def imprimir_matriz(matriz):
+            for linea in matriz:
+                print linea
 
         def enviar_cuadrante(cuadrante):
-            pass
+    		cuadrante_serializado = pickle.dumps(cuadrante)
+    		self.request.send("SEND|200|" + cuadrante_serializado)
 
         def esperar_movimiento():
-            pass
+            comando_recibido = self.request.recv(1024)
+            comando_split = comando_recibido.split("|")
+            tipo_comando = comando_split[0]
+            direccion = ""
+            if(tipo_comando == "MOV"):
+                direccion = comando_split[1]
+            return direccion
 
-        def ejecutar_movimiento():
-            pass
+        def ejecutar_movimiento(direccion, pos_x, pos_y, tablero):
+            #VARIABLES A DEVOLVER POR DEFECTO
+            continua_juego = True
+            tipo_respuesta = ""
+            descripcion_respuesta = ""
+            codigo_respuesta = 100
+            #LOGICA
+            tamanio_x, tamanio_y = tamanio_tablero(tablero)
 
-        def enviar_respuesta_movimiento():
-            pass
+            origen_x, origen_y = pos_x, pos_y
+            print origen_x,origen_y
+            destino_x, destino_y = origen_x, origen_y
+            #DETERMINAR DESTINO
+            if(direccion == "DER"):
+                destino_x = origen_x + 1
+
+            if(direccion == "IZQ"):
+                destino_x = origen_x - 1
+
+            if(direccion == "ARR"):
+                destino_y = origen_y + 1
+
+            if(direccion == "ABA"):
+                destino_y = origen_y - 1
+
+            #SI EXCEDE DEL TABLERO DEVUELVE WALL
+            if (destino_x < 0 or destino_x > tamanio_x or destino_y < 0 or destino_y > tamanio_y):
+                tipo_respuesta = "WALL"
+            #SINO PREGUNTO QUE ES EL DESTINO Y DETERMINO LA RESPUESTA
+            else:
+                destino = tablero[destino_y][destino_x]
+                print destino
+                if(destino == "P"):
+                    tipo_respuesta = "WALL"
+                if(destino == "C"):
+                    tipo_respuesta = "MOV"
+                if(destino == "O"):
+                    tipo_respuesta = "GOLD"
+                if(destino == "G"):
+                    if(self.oro_jugador > self.oro_guardia):
+                        self.oro_jugador -= self.oro_guardia
+                        tipo_respuesta = "PAY"
+                    else:
+                        tipo_respuesta = "LOST"
+
+                if(destino == "K"):
+                    tipo_respuesta = "KEY"
+                    self.key_jugador = True
+                if(destino == "D"):
+                    if(self.key_jugador):
+                        tipo_respuesta = "WIN"
+                    else:
+                        tipo_respuesta = "STOP"
+
+                #SI NO SE MOVIO VUELVE AL ORIGEN
+                se_movio = tipo_respuesta != "WALL" and tipo_respuesta != "STOP"
+                if(se_movio == False):
+                    destino_x, destino_y = origen_x, origen_y
+
+                #si no gano ni perdio quiere decir que el juego continua
+                continua_juego = tipo_respuesta != "WIN" and tipo_respuesta != "LOST"
+            codigo_respuesta = 200
+            tablero[origen_y][origen_x] = "C"
+            tablero[destino_y][destino_x] = "*"
+            #FIN LOGICA
+            return continua_juego, tipo_respuesta, codigo_respuesta
+
+        def enviar_respuesta_movimiento(tipo_respuesta, codigo_respuesta):
+            self.request.send(tipo_respuesta + "|" + str(codigo_respuesta))
 
         def esperar_reinicio():
-            pass
+            comando_recibido = self.request.recv(1024)
+            comando_split = comando_recibido.split("|")
+            tipo_comando = comando_split[0]
+            return tipo_comando == "RES"
 
         def desconectar_cliente():
             pass
 
+        def tamanio_tablero(tablero):
+            return len(tablero), len(tablero[0])
+
+        def loguearse():
+            print "Iniciando login..."
+            comando_recibido = self.request.recv(1024).strip() #definir todos los tamanios de ventana en 1024
+            comando_split = comando_recibido.split("|")
+            tipo_comando = comando_split[0]
+            usuario, contrasenia = "", ""
+            if(tipo_comando == "LOG"):
+                usuario = comando_split[1]
+                contrasenia = comando_split[2]
+                print "Datos recibidos: " + usuario + ", " + contrasenia
+            if(autenticado(usuario, contrasenia)):
+                respuesta = "LOG|"+str(200)
+                print "Logueo exitoso"
+            else:
+                respuesta = "LOG|"+str(100)
+                print "Logueo fallido"
+            self.request.send(respuesta)
+
+        def autenticado(usuario,contrasenia):
+            time.sleep(1)
+            with open("D:/Facultad Stefano/Redes/LaberintoRedes/Version 3/usernames.txt") as loginFile:
+                for linea in loginFile:
+                    user,passw=linea.split(",")
+                    passw= passw.rstrip('\n') #Esto saca el salto de linea al final de la contrasenia
+                    if (user == usuario and passw == contrasenia):
+                        return True
+                return False
 
         # PASO 1 - ESTABLECER CONEXION CON EL CLIENTE
         establecer_conexion()
-
+        loguearse()
         reiniciar = True
         while (reiniciar):
             time.sleep(0.1)
             # PASO 2 - CREAR TABLERO
             tablero = crear_tablero()
             # PASO 3 - JUGAR
+            continua_juego = True
             while (continua_juego):
                 time.sleep(0.1)
                 # PASO 3.1 - DETERMINAR POSICION DEL JUGADOR
-                posicion_actual = posicion_actual(tablero)
-                # PASO 3.2 - DETERMINAR CUADRANTE A
-                cuadrante = cuadrante(tablero, posicion_actual)
-                # PASO 5.1 - ENVIAR CUADRANTE AL JUGADOR
+                pos_x, pos_y = posicion_actual(tablero)
+                # PASO 3.2 - DETERMINAR CUADRANTE
+                cuadrante = determinar_cuadrante(tablero, pos_x, pos_y)
+                imprimir_matriz(cuadrante)
+                # PASO 3.3 - ENVIAR CUADRANTE AL JUGADOR
                 enviar_cuadrante(cuadrante)
-                # PASO 5.2 - ESPERAR MOVIMIENTO DEL JUGADOR
+                # PASO 3.4 - ESPERAR MOVIMIENTO DEL JUGADOR
                 direccion = esperar_movimiento()
-                # PASO 5.3 - PROCESAR MOVIMIENTO DEL JUGADOR
-                continua_juego, tipo_respuesta, descripcion_respuesta = ejecutar_movimiento(direccion)
-                # PASO 5.4 - ENVIAR RESPUESTA AL JUGADOR
-                enviar_respuesta_movimiento(tipo_respuesta, descripcion_respuesta)
-            # PASO 6 - UNA VEZ QUE GANO O PERDIO ESPERAR SI QUIERE REINICIAR
+                # PASO 3.5 - PROCESAR MOVIMIENTO DEL JUGADOR
+                continua_juego, tipo_respuesta, codigo_respuesta = ejecutar_movimiento(direccion, pos_x, pos_y, tablero)
+                # PASO 3.6 - ENVIAR RESPUESTA AL JUGADOR
+                enviar_respuesta_movimiento(tipo_respuesta, codigo_respuesta)
+            # PASO 4 - UNA VEZ QUE GANO O PERDIO ESPERAR SI QUIERE REINICIAR
             reiniciar = esperar_reinicio()
-        # PASO 7 - CERRAR CONEXION / SERVIDOR
+        # PASO 5 - CERRAR CONEXION / SERVIDOR
         desconectar_cliente()
 
 

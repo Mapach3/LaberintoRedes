@@ -1,3 +1,5 @@
+ancho, alto = 15,7
+
 def crearArrayMultiDimensional():
     # Creamos una list comprehension en python, es decir una lista dentro de otra lista.
     ancho, alto = 15, 7;
@@ -49,27 +51,24 @@ def crearArrayMultiDimensional():
 
     return Matriz
 
-def cuadrante(tablero, pos_x, pos_y):
-    tamanio_y = len(tablero[0]) - 1
-    tamanio_x = len(tablero) - 1
-    print tamanio_x
-    print tamanio_y
+def cuadrante(tablero, pos_x, pos_y): # 0 , 1
     x1 = pos_x - 2
     if (x1 < 0):
         x1 = 0
+    #x1 = 0
     x2 = pos_x + 2
-    if (x2 > tamanio_x):
-        x2 = tamanio_x
+    if (x2 > 5):
+        x2 = 5
+    #x2 =
     y1 = pos_y - 2
     if (y1 < 0):
         y1 = 0
     y2 = pos_y + 2
-    if (y2 > tamanio_y):
-        y2 = tamanio_y
-    tamanio_cuad_x = x2 - x1 + 1;
-    tamanio_cuad_y = y2 - y1 + 1;
-
-    cuadrante = [["|" for x in range(0,tamanio_cuad_x)] for y in range(0,tamanio_cuad_y)]
+    if (y2 > 17):
+        y2 = 17
+    tamanio_cuad_x = x2 - x1 + 1
+    tamanio_cuad_y = y2 - y1 + 1
+    cuadrante = [["|" for y in range(tamanio_cuad_y)] for x in range(tamanio_cuad_x)]
     cuad_x = 0
     for x in range(x1,x2+1):
         cuad_y = 0
@@ -89,11 +88,85 @@ def posicion_actual(tablero):
     for x,linea in enumerate(tablero):
         for y,casilla in enumerate(linea):
             if (casilla == "*"):
-                return x,y
+                print "Posicion determinada: " + str(x) + "," + str(y)
+                return y,x
     print "No se pudo determinar la posicion."
+
+def tamanio_tablero(tablero):
+    return len(tablero), len(tablero[0])
+
+def ejecutar_movimiento(direccion, pos_x, pos_y, tablero):
+    #VARIABLES A DEVOLVER POR DEFECTO
+    continua_juego = True
+    tipo_respuesta = ""
+    descripcion_respuesta = ""
+    codigo_respuesta = 100
+    #LOGICA
+    tamanio_x, tamanio_y = tamanio_tablero(tablero)
+
+    origen_x, origen_y = pos_x, pos_y
+    print origen_x,origen_y
+    destino_x, destino_y = origen_x, origen_y
+    #DETERMINAR DESTINO
+    if(direccion == "DER"):
+        destino_x = origen_x + 1
+
+    if(direccion == "IZQ"):
+        destino_x = origen_x - 1
+
+    if(direccion == "ARR"):
+        destino_y = origen_y + 1
+
+    if(direccion == "ABA"):
+        destino_y = origen_y - 1
+
+    #SI EXCEDE DEL TABLERO DEVUELVE WALL
+    if (destino_x < 0 or destino_x > tamanio_x or destino_y < 0 or destino_y > tamanio_y):
+        tipo_respuesta = "WALL"
+    #SINO PREGUNTO QUE ES EL DESTINO Y DETERMINO LA RESPUESTA
+    else:
+        destino = tablero[destino_y][destino_x]
+        print destino
+        if(destino == "P"):
+            tipo_respuesta = "WALL"
+        if(destino == "C"):
+            tipo_respuesta = "MOV"
+        if(destino == "O"):
+            tipo_respuesta = "GOLD"
+        if(destino == "G"):
+            if(self.oro_jugador > self.oro_guardia):
+                self.oro_jugador -= self.oro_guardia
+                tipo_respuesta = "PAY"
+            else:
+                tipo_respuesta = "LOST"
+
+        if(destino == "K"):
+            tipo_respuesta = "KEY"
+            self.key_jugador = True
+        if(destino == "D"):
+            if(self.key_jugador):
+                tipo_respuesta = "WIN"
+            else:
+                tipo_respuesta = "STOP"
+
+        #SI NO SE MOVIO VUELVE AL ORIGEN
+        se_movio = tipo_respuesta != "WALL" and tipo_respuesta != "STOP"
+        if(se_movio == False):
+            destino_x, destino_y = origen_x, origen_y
+
+        #si no gano ni perdio quiere decir que el juego continua
+        continua_juego = tipo_respuesta != "WIN" and tipo_respuesta != "LOST"
+    codigo_respuesta = 200
+    tablero[origen_y][origen_x] = "C"
+    tablero[destino_y][destino_x] = "*"
+    #FIN LOGICA
+    imprimirTablero(tablero)
+    return continua_juego, tipo_respuesta, codigo_respuesta
 
 matriz = crearArrayMultiDimensional()
 imprimirTablero(matriz)
 pos_x, pos_y = posicion_actual(matriz)
-imprimirTablero(cuadrante(matriz,4,4))
+imprimirTablero(cuadrante(matriz,pos_x,pos_y))
+print ejecutar_movimiento("DER",pos_x,pos_y,matriz)
+
 raw_input("enter para salir")
