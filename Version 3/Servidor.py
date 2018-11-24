@@ -80,14 +80,14 @@ class miTcpHandler(SocketServer.BaseRequestHandler):
             if (x1 < 0):
                 x1 = 0
             x2 = pos_x + 2
-            if (x2 > 5):
-                x2 = 5
+            if (x2 > 17):
+                x2 = 17
             y1 = pos_y - 2
             if (y1 < 0):
                 y1 = 0
             y2 = pos_y + 2
-            if (y2 > 17):
-                y2 = 17
+            if (y2 > 5):
+                y2 = 5
             tamanio_cuad_x = x2 - x1 + 1
             tamanio_cuad_y = y2 - y1 + 1
             cuadrante = [["|" for x in range(tamanio_cuad_x)] for y in range(tamanio_cuad_y)]
