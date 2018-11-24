@@ -106,7 +106,7 @@ def moverse(direccion):
     return termino
 
 def main():
-    #loguearse()
+    loguearse()
     #PASO 3 - RECIBIR CUADRANTE
     cuadrante = recibir_cuadrante()
     imprimir_matriz(cuadrante)
