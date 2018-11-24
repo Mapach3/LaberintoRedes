@@ -72,7 +72,7 @@ class miTcpHandler(SocketServer.BaseRequestHandler):
                 for y,casilla in enumerate(linea):
                     if (casilla == "*"):
                         print "Posicion determinada: [" + str(y) + "," + str(x) + "]"
-                        return x,y
+                        return y,x
             print "No se pudo determinar la posicion."
 
         def determinar_cuadrante(tablero, pos_x, pos_y):
@@ -233,7 +233,7 @@ class miTcpHandler(SocketServer.BaseRequestHandler):
 
         # PASO 1 - ESTABLECER CONEXION CON EL CLIENTE
         establecer_conexion()
-        loguearse()
+        #loguearse()
         reiniciar = True
         while (reiniciar):
             time.sleep(0.1)

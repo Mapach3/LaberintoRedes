@@ -106,14 +106,14 @@ def moverse(direccion):
     return termino
 
 def main():
-    loguearse()
+    #loguearse()
     #PASO 3 - RECIBIR CUADRANTE
     cuadrante = recibir_cuadrante()
     imprimir_matriz(cuadrante)
     tipo_respuesta = ""
     termino = False
     while termino == False:
-        direccion = raw_input("Moverse para --> ")
+        direccion = raw_input("Moverse para --> ").upper()
         termino = moverse(direccion)
         cuadrante = recibir_cuadrante()
         imprimir_matriz(cuadrante)
