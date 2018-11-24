@@ -33,9 +33,9 @@ class miTcpHandler(SocketServer.BaseRequestHandler):
 				Matriz[x][4]="C"
 				Matriz[x][8]="C"
 
-			Matriz[1][1]="C"	# esto se podria automatizar con un for pero no tengo ganas ahora de hacerlo..
-			Matriz[1][2]="C"
-			Matriz[1][3]="C"
+			Matriz[1][1]="O"	# esto se podria automatizar con un for pero no tengo ganas ahora de hacerlo..
+			Matriz[1][2]="G"
+			Matriz[1][3]="K"
 			Matriz[1][8]="C"
 			Matriz[1][9]="C"
 			Matriz[1][10]="C"
@@ -43,7 +43,7 @@ class miTcpHandler(SocketServer.BaseRequestHandler):
 			Matriz[1][12]="C"
 			Matriz[1][13]="C" #cambiar a c
 
-			Matriz[3][5]="C"
+			Matriz[3][5]="D"
 			Matriz[3][6]="C"
 			Matriz[3][7]="C"
 
@@ -162,7 +162,7 @@ class miTcpHandler(SocketServer.BaseRequestHandler):
                     self.oro_jugador += 100
                     tipo_respuesta = "GOLD"
                 if(destino == "G"):
-                    if(self.oro_jugador > self.oro_guardia):
+                    if(self.oro_jugador >= self.oro_guardia):
                         self.oro_jugador -= self.oro_guardia
                         tipo_respuesta = "PAY"
                     else:
@@ -242,6 +242,7 @@ class miTcpHandler(SocketServer.BaseRequestHandler):
             # PASO 2 - CREAR TABLERO
             tablero = crear_tablero()
             # PASO 3 - JUGAR
+            imprimir_matriz(tablero)
             continua_juego = True
             # PASO 3.1 - DETERMINAR POSICION DEL JUGADOR
             pos_x, pos_y = posicion_actual(tablero)

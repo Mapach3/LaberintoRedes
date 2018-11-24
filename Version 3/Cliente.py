@@ -84,7 +84,7 @@ def moverse(direccion):
         if(codigo_respuesta == "200"):
             print "Has pagado al guardia"
 
-    if(tipo_respuesta == "TAKE"):
+    if(tipo_respuesta == "KEY"):
         if(codigo_respuesta == "200"):
             print "Has agarrado la llave"
 
