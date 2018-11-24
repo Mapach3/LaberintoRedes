@@ -90,12 +90,12 @@ class miTcpHandler(SocketServer.BaseRequestHandler):
                 y2 = 17
             tamanio_cuad_x = x2 - x1 + 1
             tamanio_cuad_y = y2 - y1 + 1
-            cuadrante = [["|" for y in range(tamanio_cuad_y)] for x in range(tamanio_cuad_x)]
+            cuadrante = [["|" for x in range(tamanio_cuad_x)] for y in range(tamanio_cuad_y)]
             cuad_x = 0
             for x in range(x1,x2+1):
                 cuad_y = 0
                 for y in range(y1,y2+1):
-                    cuadrante[cuad_x][cuad_y] = tablero[x][y]
+                    cuadrante[cuad_y][cuad_x] = tablero[y][x]
                     cuad_y += 1
                 cuad_x += 1
             return cuadrante

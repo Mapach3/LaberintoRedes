@@ -62,7 +62,7 @@ def recibir_cuadrante():
         print "Error > se esperaba comando SEND"
 
 def moverse(direccion):
-    termino = True
+    termino = False
     socket1.send("MOV|" + direccion)
     respuesta = socket1.recv(1024).split("|")
     tipo_respuesta = respuesta[0]
@@ -101,7 +101,7 @@ def moverse(direccion):
             print "Necesitas la llave para salir del laberinto"
 
     if(tipo_respuesta == "WIN" or tipo_respuesta == "LOST"):
-        termino = False
+        termino = True
 
     return termino
 
