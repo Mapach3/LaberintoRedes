@@ -21,6 +21,10 @@ if(tipo_respuesta == "EST"):
 else:
     print "Error > se esperaba comando EST"
 
+def imprimir_matriz(matriz):
+    for linea in matriz:
+        print linea
+
 def loguearse():
         print "Iniciando login..."
         logeado = False
@@ -57,11 +61,62 @@ def recibir_cuadrante():
     else:
         print "Error > se esperaba comando SEND"
 
+def moverse(direccion):
+    termino = True
+    socket1.send("MOV|" + direccion)
+    respuesta = socket1.recv(1024).split("|")
+    tipo_respuesta = respuesta[0]
+    codigo_respuesta = respuesta[1]
+
+    if(tipo_respuesta == "MOV"):
+        if(codigo_respuesta == "200"):
+            print "Te has movido un lugar"
+
+    if(tipo_respuesta == "GOLD"):
+        if(codigo_respuesta == "200"):
+            print "Has agarrado una moneda"
+
+    if(tipo_respuesta == "WALL"):
+        if(codigo_respuesta == "200"):
+            print "Has chocado con una pared"
+
+    if(tipo_respuesta == "PAY"):
+        if(codigo_respuesta == "200"):
+            print "Has pagado al guardia"
+
+    if(tipo_respuesta == "TAKE"):
+        if(codigo_respuesta == "200"):
+            print "Has agarrado la llave"
+
+    if(tipo_respuesta == "WIN"):
+        if(codigo_respuesta == "200"):
+            print "HAS GANADO"
+
+    if(tipo_respuesta == "LOST"):
+        if(codigo_respuesta == "200"):
+            print "HAS PERDIDO"
+
+    if(tipo_respuesta == "STOP"):
+        if(codigo_respuesta == "200"):
+            print "Necesitas la llave para salir del laberinto"
+
+    if(tipo_respuesta == "WIN" or tipo_respuesta == "LOST"):
+        termino = False
+
+    return termino
+
 def main():
     loguearse()
     #PASO 3 - RECIBIR CUADRANTE
     cuadrante = recibir_cuadrante()
-    print cuadrante
+    imprimir_matriz(cuadrante)
+    tipo_respuesta = ""
+    termino = False
+    while termino == False:
+        direccion = raw_input("Moverse para --> ")
+        termino = moverse(direccion)
+        cuadrante = recibir_cuadrante()
+        imprimir_matriz(cuadrante)
     raw_input("toca enter para salir")
     #PASO 4 - MOVERSE
 

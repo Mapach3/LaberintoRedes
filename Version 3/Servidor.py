@@ -71,7 +71,7 @@ class miTcpHandler(SocketServer.BaseRequestHandler):
             for x,linea in enumerate(tablero):
                 for y,casilla in enumerate(linea):
                     if (casilla == "*"):
-                        print "Posicion determinada: [" + str(x) + "," + str(y) + "]"
+                        print "Posicion determinada: [" + str(y) + "," + str(x) + "]"
                         return x,y
             print "No se pudo determinar la posicion."
 
@@ -125,9 +125,11 @@ class miTcpHandler(SocketServer.BaseRequestHandler):
             codigo_respuesta = 100
             #LOGICA
             tamanio_x, tamanio_y = tamanio_tablero(tablero)
-
+            print "tamanio y x"
+            print tamanio_y, tamanio_x
             origen_x, origen_y = pos_x, pos_y
-            print origen_x,origen_y
+            print "origen y x"
+            print origen_y,origen_x
             destino_x, destino_y = origen_x, origen_y
             #DETERMINAR DESTINO
             if(direccion == "DER"):
@@ -148,12 +150,14 @@ class miTcpHandler(SocketServer.BaseRequestHandler):
             #SINO PREGUNTO QUE ES EL DESTINO Y DETERMINO LA RESPUESTA
             else:
                 destino = tablero[destino_y][destino_x]
+                print "destino"
                 print destino
                 if(destino == "P"):
                     tipo_respuesta = "WALL"
                 if(destino == "C"):
                     tipo_respuesta = "MOV"
                 if(destino == "O"):
+                    self.oro_jugador += 100
                     tipo_respuesta = "GOLD"
                 if(destino == "G"):
                     if(self.oro_jugador > self.oro_guardia):
@@ -237,21 +241,31 @@ class miTcpHandler(SocketServer.BaseRequestHandler):
             tablero = crear_tablero()
             # PASO 3 - JUGAR
             continua_juego = True
+            # PASO 3.1 - DETERMINAR POSICION DEL JUGADOR
+            pos_x, pos_y = posicion_actual(tablero)
+
+            print "Pos x y"
+            print pos_x, pos_y
+            # PASO 3.2 - DETERMINAR CUADRANTE
+            cuadrante = determinar_cuadrante(tablero, pos_x, pos_y)
+            imprimir_matriz(cuadrante)
+            # PASO 3.3 - ENVIAR CUADRANTE AL JUGADOR
+            enviar_cuadrante(cuadrante)
             while (continua_juego):
                 time.sleep(0.1)
-                # PASO 3.1 - DETERMINAR POSICION DEL JUGADOR
+                # PASO 3.1 - ESPERAR MOVIMIENTO DEL JUGADOR
+                direccion = esperar_movimiento()
+                # PASO 3.2 - PROCESAR MOVIMIENTO DEL JUGADOR
+                continua_juego, tipo_respuesta, codigo_respuesta = ejecutar_movimiento(direccion, pos_x, pos_y, tablero)
+                # PASO 3.3 - ENVIAR RESPUESTA AL JUGADOR
+                enviar_respuesta_movimiento(tipo_respuesta, codigo_respuesta)
+                # PASO 3.4 - DETERMINAR POSICION DEL JUGADOR
                 pos_x, pos_y = posicion_actual(tablero)
-                # PASO 3.2 - DETERMINAR CUADRANTE
+                # PASO 3.5 - DETERMINAR CUADRANTE
                 cuadrante = determinar_cuadrante(tablero, pos_x, pos_y)
                 imprimir_matriz(cuadrante)
-                # PASO 3.3 - ENVIAR CUADRANTE AL JUGADOR
+                # PASO 3.6 - ENVIAR CUADRANTE AL JUGADOR
                 enviar_cuadrante(cuadrante)
-                # PASO 3.4 - ESPERAR MOVIMIENTO DEL JUGADOR
-                direccion = esperar_movimiento()
-                # PASO 3.5 - PROCESAR MOVIMIENTO DEL JUGADOR
-                continua_juego, tipo_respuesta, codigo_respuesta = ejecutar_movimiento(direccion, pos_x, pos_y, tablero)
-                # PASO 3.6 - ENVIAR RESPUESTA AL JUGADOR
-                enviar_respuesta_movimiento(tipo_respuesta, codigo_respuesta)
             # PASO 4 - UNA VEZ QUE GANO O PERDIO ESPERAR SI QUIERE REINICIAR
             reiniciar = esperar_reinicio()
         # PASO 5 - CERRAR CONEXION / SERVIDOR
