@@ -139,10 +139,10 @@ class miTcpHandler(SocketServer.BaseRequestHandler):
                 destino_x = origen_x - 1
 
             if(direccion == "ARR"):
-                destino_y = origen_y + 1
+                destino_y = origen_y - 1
 
             if(direccion == "ABA"):
-                destino_y = origen_y - 1
+                destino_y = origen_y + 1
 
             #SI EXCEDE DEL TABLERO DEVUELVE WALL
             if (destino_x < 0 or destino_x > tamanio_x or destino_y < 0 or destino_y > tamanio_y):
@@ -150,6 +150,8 @@ class miTcpHandler(SocketServer.BaseRequestHandler):
             #SINO PREGUNTO QUE ES EL DESTINO Y DETERMINO LA RESPUESTA
             else:
                 destino = tablero[destino_y][destino_x]
+                print "destino y x"
+                print destino_y, destino_x
                 print "destino"
                 print destino
                 if(destino == "P"):
